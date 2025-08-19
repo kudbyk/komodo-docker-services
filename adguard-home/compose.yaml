@@ -1,0 +1,23 @@
+services:
+  adguardhome:
+    image: adguard/adguardhome
+    container_name: adguardhome
+    restart: unless-stopped
+    ports:
+      - "3000:3000" # Web interface
+      - "53:53/tcp" # DNS over TCP
+      - "53:53/udp" # DNS over UDP
+      - "853:853/tcp" # DNS over TLS
+    networks:
+      - adguard_net
+    volumes:
+      - adguard_work:/opt/adguardhome/work
+      - adguard_conf:/opt/adguardhome/conf
+
+volumes:
+  adguard_conf:
+  adguard_work:
+  
+networks:
+  adguard_net:
+    driver: bridge

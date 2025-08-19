@@ -1,0 +1,32 @@
+services:
+  generator:
+    build: .
+    container_name: generator
+    env_file:
+      - compose.env
+    volumes:
+      - outlinevpn:/opt/outline/persisted-state
+    restart: "no"
+
+  shadowbox:
+    image: quay.io/outline/shadowbox:stable
+    container_name: shadowbox
+    network_mode: "host"
+    restart: always
+    env_file:
+      - compose.env
+    volumes:
+      - outlinevpn:/opt/outline/persisted-state
+    depends_on:
+      - generator
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    command: --cleanup --label-enable --interval 3600
+
+volumes:
+  outlinevpn:
